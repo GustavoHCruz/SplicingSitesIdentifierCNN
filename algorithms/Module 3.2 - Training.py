@@ -2,6 +2,7 @@ from tensorflow import keras
 from keras.layers import Conv2D, MaxPool2D
 from keras.layers.core import Dense, Flatten
 from keras.models import Sequential
+from keras.metrics import Accuracy, Precision, Recall
 import pickle
 import numpy as np
 
@@ -11,15 +12,20 @@ model_filename_output = "col_ac"
 file = open("./assets/mod3/"+mod3_filename_input+".mod3", "rb")
 data = pickle.load(file)
 
-width = 58
-height = 4
-channels = 1
-input_shape = (width, height, channels)
-
 train_samples = data['train_samples']
 train_labels = data['train_labels']
 test_samples = data['test_samples']
 test_labels = data['test_labels']
+
+avg = 0
+for sample in train_samples:
+    avg += sample.size[1]
+avg /= len(train_samples)
+
+width = int(avg)
+height = 4
+channels = 1
+input_shape = (width, height, channels)
 
 train_samples_resized = []
 for i in range(0, len(train_samples)):
@@ -31,9 +37,9 @@ for i in range(0, len(test_samples)):
   resized_sample = test_samples[i].resize((height, width))
   test_samples_resized.append(np.array(resized_sample))
 
-train_samples = np.array(train_samples_resized, dtype='float32')
+train_samples_resized = np.array(train_samples_resized, dtype='float32')
 train_labels = np.array(train_labels, dtype='float32')
-test_samples = np.array(test_samples_resized, dtype='float32')
+test_samples_resized = np.array(test_samples_resized, dtype='float32')
 test_labels = np.array(test_labels, dtype='float32')
 
 model = Sequential()
@@ -46,10 +52,21 @@ model.add(Dense(2, activation='softmax'))
 
 # model.summary()
 
-model.compile(optimizer='adam', loss=keras.losses.CategoricalCrossentropy(), metrics=['accuracy'])
+model.compile(optimizer='adam', loss=keras.losses.CategoricalCrossentropy(), metrics=[Accuracy(), Precision(), Recall()])
 
-history = model.fit(train_samples, keras.utils.to_categorical(train_labels), epochs=10, validation_data=(test_samples, keras.utils.to_categorical(test_labels)))
+history = model.fit(train_samples_resized, keras.utils.to_categorical(train_labels), epochs=1000)
 
 # Saving Training History
 
 model.save('assets/models/'+model_filename_output)
+
+import matplotlib.pyplot as plt
+
+plt.plot(history.history['accuracy'], label='accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.ylim([0.2, 1])
+plt.legend(loc='lower right')
+plt.show()
+
+test_loss = model.evaluate(test_samples_resized,  keras.utils.to_categorical(test_labels), verbose=2)
