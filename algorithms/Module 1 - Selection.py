@@ -26,9 +26,12 @@ def make_introns_list(exons_list, length):
 
   return seq
 
-from Bio import SeqIO
 import pickle
 import re
+from math import ceil
+from random import seed, shuffle
+
+from Bio import SeqIO
 
 genbank_filename_input = "colletotrichum_actin"
 mod1_filename_output = "col_ac"
@@ -52,12 +55,23 @@ for register in SeqIO.parse(genbank_archive, "genbank"):
       introns, exons = [], []
 
       for x in exons_list:
-          exons.append([seq[(x[0]):(x[1])+1]])
+          exons.append(seq[(x[0]):(x[1])+1])
       for x in introns_list:
-          introns.append([seq[(x[0]):(x[1])+1]])
+          introns.append(seq[(x[0]):(x[1])+1])
         
     if correct:
-      data.append([seq, exons_list, exons, introns_list, introns])
+      sequence_info = {
+        'complete_sequence': seq,
+        'exons': [{'position': exons_list[i], 'data': exons[i]} for i in range(len(exons))],
+        'introns': [{'position': introns_list[i], 'data': introns[i]} for i in range(len(introns))],
+        'response_sequence': ''.join(exons)
+      }
+      data.append(sequence_info)
+
+seed(10)
+shuffle(data)
+
+train_amount = ceil(len(data) * 0.8)
 
 file = open("./assets/mod1/"+mod1_filename_output+".mod1","wb")
-pickle.dump(data, file)
+pickle.dump({'train': data[:train_amount], 'test': data[train_amount:]}, file)

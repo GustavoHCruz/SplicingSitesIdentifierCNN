@@ -6,7 +6,7 @@ For the project, two data sources were used (to create two models), the fungi _C
 
 This repository also has the written article, named **Monography.pdf**.
 
-# Libraries and Packages
+## Libraries and Packages
 
 To go all the way from pre-processing to training and obtaining forecasts, the following libraries/packages were needed (installation via PIP):
 
@@ -14,7 +14,9 @@ To go all the way from pre-processing to training and obtaining forecasts, the f
 - [Tensorflow](https://www.tensorflow.org/): pip install tensorflow
 - [Pillow](https://pillow.readthedocs.io/): pip install Pillow
 
-# How it works
+See requirements.txt to download the specific versions used.
+
+## How it works
 
 The training was given by steps.
 

@@ -1,10 +1,11 @@
-from tensorflow import keras
-from keras.layers import Conv2D, MaxPool2D
-from keras.layers.core import Dense, Flatten
-from keras.models import Sequential
-from keras.metrics import Accuracy, Precision, Recall
 import pickle
+
+import matplotlib.pyplot as plt
 import numpy as np
+from keras.layers import Conv2D, Dense, Flatten, MaxPool2D
+from keras.metrics import Accuracy, Precision, Recall
+from keras.models import Sequential
+from tensorflow import keras
 
 mod3_filename_input = "col_ac"
 model_filename_output = "col_ac"
