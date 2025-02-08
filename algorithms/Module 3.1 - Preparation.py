@@ -2,8 +2,9 @@ to_list_dict = {'A': [1,0,0,0], 'C': [0,1,0,0], 'G': [0,0,1,0], 'T':[0,0,0,1]}
 separation_rate = 0.2
 
 import pickle
-import numpy as np
 import random as rd
+
+import numpy as np
 from PIL import Image as im
 
 mod2_filename_input = "col_ac"

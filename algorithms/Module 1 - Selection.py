@@ -45,7 +45,7 @@ for register in SeqIO.parse(genbank_archive, "genbank"):
     correct = False
 
     seq = str(register.seq)
-    if len(seq) <= 300 and re.match(r'^[ACGT]+$', seq):
+    if len(seq) <= 1000 and re.match(r'^[ACGT]+$', seq):
       correct = True
 
       exons_list = make_exons_list(register.features[-1].location)
@@ -67,11 +67,25 @@ for register in SeqIO.parse(genbank_archive, "genbank"):
         'response_sequence': ''.join(exons)
       }
       data.append(sequence_info)
+  
+unique = {}
+for seq in data:
+    key = hash(seq['complete_sequence'])
+    if key not in unique:
+        unique[key] = seq
+
+seqs = []
+for seq in unique:
+  seqs.append(unique[seq])
+
+data = seqs
 
 seed(10)
 shuffle(data)
 
 train_amount = ceil(len(data) * 0.8)
+
+print(f"Data:{len(data)} - Train:{train_amount}")
 
 file = open("./assets/mod1/"+mod1_filename_output+".mod1","wb")
 pickle.dump({'train': data[:train_amount], 'test': data[train_amount:]}, file)
