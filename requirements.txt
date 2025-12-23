@@ -1,4 +1,4 @@
 Pillow==10.3.0
-biopython==1.83
+biopython==1.86
 tensorflow==2.16.1
 matplotlib==3.9.0
